@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Monolithic_Architecture_API.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,12 @@ builder.Services.AddSwaggerGen(c =>
             Email = "lazaro.19251953@gmail.com"
         }
     });
+});
+
+string? connectionString = builder.Configuration.GetSection("ConnectionStrings").GetValue<string>("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 var app = builder.Build();
