@@ -110,7 +110,7 @@ namespace Monolithic_Architecture_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenUserRequest refreshTokenUserRequest)
         {
-            if(string.IsNullOrWhiteSpace(refreshTokenUserRequest.RefreshToken) || string.IsNullOrEmpty(refreshTokenUserRequest.AccessToken))
+            if(string.IsNullOrWhiteSpace(refreshTokenUserRequest.RefreshToken) || string.IsNullOrEmpty(refreshTokenUserRequest.AccessTokenExpired))
             {
                 return BadRequest(new ApiResponse
                 {
@@ -118,7 +118,7 @@ namespace Monolithic_Architecture_API.Controllers
                     StatusCode = StatusCodes.Status400BadRequest
                 });
             }
-            var accessToken = refreshTokenUserRequest.AccessToken;
+            var accessToken = refreshTokenUserRequest.AccessTokenExpired;
             var refreshToken = refreshTokenUserRequest.RefreshToken;
             ClaimsPrincipal principal;
             try
