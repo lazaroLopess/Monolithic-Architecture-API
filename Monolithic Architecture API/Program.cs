@@ -4,6 +4,7 @@ using Monolithic_Architecture_API.Context;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Monolithic_Architecture_API.Identity;
+using Monolithic_Architecture_API.TokenServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
+
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
