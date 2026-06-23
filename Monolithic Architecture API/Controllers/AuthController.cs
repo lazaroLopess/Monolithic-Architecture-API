@@ -190,7 +190,6 @@ namespace Monolithic_Architecture_API.Controllers
         public async Task<IActionResult> Logout()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine(userId);
             var user = await _userManager.FindByIdAsync(userId!);
             if (user == null) return NotFound(new ApiResponse
             {
