@@ -183,6 +183,9 @@ namespace Monolithic_Architecture_API.Controllers
         [HttpPost]
         [Route("logout")]
         [Authorize(Policy = "User")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Logout()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
