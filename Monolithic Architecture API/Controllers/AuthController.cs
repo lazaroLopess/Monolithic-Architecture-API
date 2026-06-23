@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Monolithic_Architecture_API.DTOs.Requests;
@@ -104,6 +105,7 @@ namespace Monolithic_Architecture_API.Controllers
         }
         [HttpPost]
         [Route("refresh")]
+        [Authorize(Policy = "User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -179,37 +181,30 @@ namespace Monolithic_Architecture_API.Controllers
             });
         }
         [HttpPost]
-        [Route("revoke")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RevokeToken([FromBody] string userId)
+        [Route("logout")]
+        [Authorize(Policy = "User")]
+        public async Task<IActionResult> Logout()
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if(user == null)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine(userId);
+            var user = await _userManager.FindByIdAsync(userId!);
+            if (user == null) return NotFound(new ApiResponse
             {
-                return NotFound(new ApiResponse 
-                { 
-                    Message = "user not found",
-                    StatusCode = StatusCodes.Status404NotFound
-                });
-            }
+                Message = "user not found",
+                StatusCode = StatusCodes.Status404NotFound
+            });
             user.RefreshToken = null;
             user.RefreshTokenExpiryTime = DateTime.MinValue;
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                return BadRequest(new ApiResponse
+                return Ok(new ApiResponse
                 {
-                    Message = "Failed to revoke token",
-                    StatusCode = StatusCodes.Status400BadRequest
+                    Message = "Logged out successfully",
+                    StatusCode = StatusCodes.Status200OK
                 });
             }
-            return Ok(new ApiResponse
-            {
-                Message = "User token revoked successfully",
-                StatusCode = StatusCodes.Status200OK
-            });
+            return BadRequest();
         }
     }
 }
