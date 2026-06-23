@@ -103,7 +103,7 @@ namespace Monolithic_Architecture_API.Controllers
             });
         }
         [HttpPost]
-        [Route("refresh-token")]
+        [Route("refresh")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -176,6 +176,39 @@ namespace Monolithic_Architecture_API.Controllers
             {
                 Message = string.Join(", ", result.Errors.Select(e => e.Description)),
                 StatusCode = StatusCodes.Status400BadRequest
+            });
+        }
+        [HttpPost]
+        [Route("revoke")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RevokeToken([FromBody] string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return NotFound(new ApiResponse 
+                { 
+                    Message = "user not found",
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            }
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new ApiResponse
+                {
+                    Message = "Failed to revoke token",
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+            }
+            return Ok(new ApiResponse
+            {
+                Message = "User token revoked successfully",
+                StatusCode = StatusCodes.Status200OK
             });
         }
     }
