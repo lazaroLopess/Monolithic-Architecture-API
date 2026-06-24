@@ -66,13 +66,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy =>
+    options.AddPolicy("Admin", policy =>
     {
         policy.RequireRole("admin");
     });
     options.AddPolicy("User", policy =>
     {
         policy.RequireRole("user");
+    });
+    options.AddPolicy("SuperAdminOnly", policy =>
+    {
+        policy.RequireRole("superadmin");
     });
 });
 
