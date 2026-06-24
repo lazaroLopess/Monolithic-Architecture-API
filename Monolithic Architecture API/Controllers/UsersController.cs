@@ -20,7 +20,7 @@ namespace Monolithic_Architecture_API.Controllers
             _userManager = userManager;
         }
         [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -40,7 +40,7 @@ namespace Monolithic_Architecture_API.Controllers
         }
         [HttpGet]
         [Route("{identifier}")]
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -120,7 +120,7 @@ namespace Monolithic_Architecture_API.Controllers
             });
         }
         [HttpPut("{id}")]
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -179,7 +179,7 @@ namespace Monolithic_Architecture_API.Controllers
             });
         }
         [HttpDelete("{identifier}")]
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
